@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<style>
+		*, *::after, *::before {
+			box-sizing: border-box;
+		}
+
+		:root {
+			--cell-size: 100px;
+			--mark-size: calc(var(--cell-size) * 0.9);
+		}
+
+		body {
+			margin: 0; 
+			overflow-x: hidden;
+		}
+
+		.board {
+			display: grid;
+			width: 100vw; 
+			height: 100vh;
+			justify-content: center;
+			align-content: center;
+			justify-items: center;
+			align-items: center;
+			grid-template-columns: repeat(3, auto);
+		}
+
+		.cell {
+			position: relative;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: var(--cell-size);
+			height: var(--cell-size);
+			border: 2px solid rgb(145, 20, 156);
+			background-color: rgb(247, 247, 247);
+			cursor: pointer;
+		}
+
+		.cell:first-child,
+		.cell:nth-child(2),
+		.cell:nth-child(3) {
+			border-top: none 
+		}
+
+		.cell:last-child,
+		.cell:nth-child(8),
+		.cell:nth-child(7) {
+			border-bottom: 5px  
+		}
+
+
+		.cell:nth-child(3n+1) {
+			border-left-width: 4px;
+		}
+
+		.cell:nth-child(3n+3) {
+			border-right-width: 4px;
+		}
+
+		.cell:nth-child(1),
+		.cell:nth-child(2),
+		.cell:nth-child(3) {
+			border-top: 4px solid rgb(145, 20, 156);
+		}
+
+		.cell:nth-child(7),
+		.cell:nth-child(8),
+		.cell:nth-child(9) {
+			border-bottom: 4px solid rgb(145, 20, 156);
+		}
+
+
+
+		.board.x .cell:hover::before,
+		.cell.x:before {
+			transform: rotate(45deg);
+		}
+
+		.board.x .cell:hover::after,
+		.cell.x:after {
+			transform: rotate(-45deg);
+		}
+
+		.cell.circle::before,
+		.cell.circle::after,
+		.cell.x::before,
+		.cell.x::after {
+			background-color: rgb(32, 33, 34);
+		}
+
+
+		.cell.x:before,
+		.board.x .cell:not(.x):not(.circle):hover::before,
+		.board.x .cell:not(.x):not(.circle):hover::after,
+		.cell.x:after {
+			content: '';
+			position: absolute;
+			top: 0;
+
+			width: calc(var(--mark-size) * .15);
+			height: var(--mark-size);
+			background-color: #000;
+		}
+
+
+		.cell.circle:before,
+		.cell.circle:after,
+		.board.circle .cell:not(.x):not(.circle):hover::before,
+		.board.circle .cell:not(.x):not(.circle):hover::after {
+			content: '';
+			position: absolute;
+			border-radius: 50%;
+		}
+
+		.cell.x,
+		.cell.circle {
+			cursor: not-allowed
+		}
+
+		.board.circle .cell:not(.x):not(.circle):hover::before,
+		.board.circle .cell:not(.x):not(.circle):hover::after,
+		.board.x .cell:not(.x):not(.circle):hover::before,
+		.board.x .cell:not(.x):not(.circle):hover::after {
+			background-color: rgb(145, 20, 156);
+		}
+
+		.board.circle .cell:not(.x):not(.circle):hover::before,
+		.cell.circle:before {
+			width: var(--mark-size);
+			height: var(--mark-size);
+		}
+
+		.board.circle .cell:not(.x):not(.circle):hover::after,
+		.cell.circle:after {
+			width: calc(var(--mark-size) * 0.7);
+			height: calc(var(--mark-size) * 0.7);
+			background-color: rgb(247, 247, 247);
+		}
+
+		.winning-message {
+			position: fixed;
+			z-index: 1;
+			top: 0; 
+			left: 0;
+			display: none;
+			flex-direction: column;
+			width: 100vw;
+			height: 100vh;
+			background-color: rgba(0,0,0,0.5);
+			backdrop-filter: blur(5px);
+			justify-content: center;
+			align-items: center;
+		}
+		
+		.winning-message--visible {
+			display: flex;
+		}
+
+		.winning-message__text {
+			font-size: 30px;
+			font-weight: bold;
+			color: #fff;
+		}
+
+		.winning-message__btn {
+			display: block;
+			padding: 60px;
+			padding-block: 10px;
+			font-size: 20px;
+			font-weight: bold;
+			border: 3px solid aqua;
+			box-shadow: none;
+			text-transform: uppercase;
+			color: #000;
+			background: aqua;
+			cursor: pointer;
+			transition: all 0.2s;
+		}
+
+		.winning-message__btn:hover {
+			color: #fff;
+			background:rgb(145, 20, 156);
+			border-color: rgb(145, 20, 156)
+		}
+
+	</style>
+</head>
+<body>
+	
+		<div id="board" class="board">
+			<div class="cell" data-cell></div>
+			<div class="cell" data-cell></div>
+			<div class="cell" data-cell></div>
+			<div class="cell" data-cell></div>
+			<div class="cell" data-cell></div>
+			<div class="cell" data-cell></div>
+			<div class="cell" data-cell></div>
+			<div class="cell" data-cell></div>
+			<div class="cell" data-cell></div>
+		</div>
+
+
+		<div class="winning-message">
+			<p class="winning-message__text" data-winning-message-text></p>
+			<button id="restartButton" class="winning-message__btn">Restart</button>
+		</div>
+
+
+
+	<script src="app.js"></script>
+</body>
+</html>
